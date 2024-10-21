@@ -1,5 +1,4 @@
 package Dados;
-import java.util.Random;
 
 import javafx.scene.image.ImageView;
 
@@ -47,10 +46,9 @@ public class Jogador {
         this.tipoJogador = tipoJogador;
     }
 
-    public int atacar(Jogador jogador, int dado){
+    public void atacar(Jogador jogador, int dado){
         int vidas = jogador.getVidas() - dano;
         jogador.setVidas(vidas);
-        return dano;
     }
 
 
