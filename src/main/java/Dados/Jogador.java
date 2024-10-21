@@ -47,16 +47,11 @@ public class Jogador {
         this.tipoJogador = tipoJogador;
     }
 
-    public int atacar(Jogador jogador){
-        int dano = rolarDado();
+    public int atacar(Jogador jogador, int dado){
         int vidas = jogador.getVidas() - dano;
         jogador.setVidas(vidas);
         return dano;
     }
 
-    public static int rolarDado() {
-        Random random = new Random();
-        return random.nextInt(6) + 1; // Retorna um número entre 1 e 6
-    }
 
 }
