@@ -1,7 +1,6 @@
 package Dados;
 
 import java.util.ArrayList;
-
 import javafx.scene.image.ImageView;
 
 public class Tabuleiro {
@@ -22,7 +21,7 @@ public class Tabuleiro {
 
    public Jogador getInimigoByImage(ImageView imageInimigo) {
       for (Jogador jogador : inimigos) {
-         if (jogador.getJogadorView() == imageInimigo) {
+         if (jogador.getImagem() == imageInimigo) {
             return jogador;
          }
       }

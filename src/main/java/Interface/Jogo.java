@@ -135,30 +135,20 @@ public class Jogo extends Application {
         Button rolarButton = new Button("Rolar Dado");
         layout.getChildren().add(rolarButton);
         rolarButton.setOnAction(e -> {
-            int dado = random.nextInt(6) + 6; // Rola o dado
+            int dado = random.nextInt(6) + 1; // Rola o dado
             String mensagemDadoDois = "Você rolou o dado e obteve " + dado + "\n";
             Platform.runLater(() -> textArea.appendText(mensagemDadoDois)); // Atualiza a UI com a mensagem
-            if (colidiu) {
-                String mensagemCacador = cacador.getTipoJogador() + " causou "
-                        + dado + " de dano em " + zumbiNew.getTipoJogador() + "\n";
-                String mensagem = "Vida do Caçador: " + cacador.getVidas() +
-                        "\nVida do zumbi: " + zumbiNew.getVidas() + "\n";
-                Platform.runLater(() -> textArea.appendText(mensagemCacador));
-                Platform.runLater(() -> textArea.appendText(mensagem));
-            }
             // Usar um novo thread para pausar e depois fechar a janela
             new Thread(() -> {
-                if (colidiu) {
-                    pausar(4000);
-                }
                 pausar(2000); // Atraso de 2 segundos para mostrar a mensagem
                 Platform.runLater(() -> diceStage.close()); // Fecha a janela na thread correta
             }).start();
-            passosDispo = dado;
+            // Retorna o valor do dado rolado
+            passosDispo = dado; // Atualiza passos disponíveis com o valor rolado
         });
         // Aguarda o fechamento da janela
         diceStage.showAndWait();
-        return passosDispo; // Retorna o valor do dado gerado no evento
+        return passosDispo; // Retorna o valor dos passos disponíveis
     }
 
     public void iniciarCombate() {
@@ -182,64 +172,43 @@ public class Jogo extends Application {
             }
         }
         final ImageView inimigoFinal = inimigoColidido;
-
         if (inimigoFinal != null) {
             zumbiNew = tabuleiro.getInimigoByImage(inimigoFinal);
             while (cacador.getVidas() > 0 && zumbiNew.getVidas() > 0) {
-                Random random = new Random();
-                dado = random.nextInt(6) + 6;
-                dadoJogador = 0;
-                if (dadoJogador == 0) {
-                    dadoJogador = rolarDado(); 
-                    //Dado jogador está sendo chamado antes do cacador.atacar, por isso nao mostra o dano dado no zumbi
-                    cacador.atacar(zumbiNew, dadoJogador);
-                    dadoJogador = 0;
-                    break; //Remover esse break
-                }
+                // Rola o dado para o caçador
+                dadoJogador = rolarDado(); // Aqui você deve usar o valor retornado
+                // Rola o dado para o zumbi
+                dado = new Random().nextInt(6) + 1; // Rola o dado para o zumbi
+                // Aplica o dano
+                cacador.atacar(zumbiNew, dadoJogador);
                 zumbiNew.atacar(cacador, dado);
-                /**
-                 * String mensagemCacador = cacador.getTipoJogador() + " causou "
-                 * + dadoJogador + " de dano em " + zumbiNew.getTipoJogador() + "\n";
-                 * String mensagemZumbi = zumbiNew.getTipoJogador() + " causou " + dado
-                 * + " de dano em " + cacador.getTipoJogador() + "\n";
-                 * String mensagem = "Vida do Caçador: " + cacador.getVidas() +
-                 * "\nVida do zumbi: " + zumbiNew.getVidas() + "\n";
-                 * Platform.runLater(() -> textArea.appendText(mensagemCacador));
-                 * Platform.runLater(() -> textArea.appendText(mensagemZumbi));
-                 * Platform.runLater(() -> textArea.appendText(mensagem));
-                 **/
-                pausar(500);
+                // Atualiza a interface com os resultados
+                String mensagemCacador = cacador.getTipoJogador() + " causou " + dadoJogador + " de dano em " + zumbiNew.getTipoJogador() + "\n";
+                String mensagemZumbi = zumbiNew.getTipoJogador() + " causou " + dado + " de dano em " + cacador.getTipoJogador() + "\n";
+                String mensagem = "Vida do Caçador: " + cacador.getVidas() + "\n" + "Vida do zumbi: " + zumbiNew.getVidas() + "\n";
+                Platform.runLater(() -> {
+                    textArea.appendText(mensagemCacador);
+                    textArea.appendText(mensagemZumbi);
+                    textArea.appendText(mensagem);
+                });
+                pausar(500); // Pausa para visualização
+                // Verifica se o caçador ou o zumbi foram derrotados
                 if (cacador.getVidas() <= 0) {
-                    textArea.appendText("O Caçador foi derrotado!\n");
-                    System.out.println("O Caçador foi derrotado!\\n");
+                    Platform.runLater(() -> textArea.appendText("O Caçador foi derrotado!\n"));
                     root.getChildren().remove(jogadorView);
-                    if (tabuleiro != null && (!tabuleiro.isEmpty()) && tabuleiro.contains(cacador)) {
-                        tabuleiro.remove(cacador);
-                    }
-                    colidiu = false;
-                    break;
+                    break; // Sai do loop
                 } else if (zumbiNew.getVidas() <= 0) {
-                    textArea.appendText("O Zumbi foi eliminado!\n");
-                    System.out.println("O Zumbi foi eliminado!\n");
+                    Platform.runLater(() -> textArea.appendText("O Zumbi foi eliminado!\n"));
                     root.getChildren().remove(inimigoFinal);
-                    if (tabuleiro != null && (!tabuleiro.isEmpty()) && tabuleiro.contains(zumbiNew)) {
-                        tabuleiro.remove(zumbiNew);
-                    }
-                    if (inimigos != null && (!inimigos.isEmpty()) && inimigos.contains(inimigoFinal)) {
-                        inimigos.remove(inimigoFinal);
-                    }
-                    colidiu = false;
-                    break;
+                    break; // Sai do loop
                 }
             }
-
         }
         // Feche a janela após um curto atraso
         Platform.runLater(() -> {
             pausar(3000); // Espera 3 segundos antes de fechar
             combateStage.close();
         });
-
         combateStage.showAndWait();
     }
 
