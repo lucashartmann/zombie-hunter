@@ -183,15 +183,18 @@ public class Jogo extends Application {
                 cacador.atacar(zumbiNew, dadoJogador);
                 zumbiNew.atacar(cacador, dado);
                 // Atualiza a interface com os resultados
-                String mensagemCacador = cacador.getTipoJogador() + " causou " + dadoJogador + " de dano em " + zumbiNew.getTipoJogador() + "\n";
-                String mensagemZumbi = zumbiNew.getTipoJogador() + " causou " + dado + " de dano em " + cacador.getTipoJogador() + "\n";
-                String mensagem = "Vida do Caçador: " + cacador.getVidas() + "\n" + "Vida do zumbi: " + zumbiNew.getVidas() + "\n";
+                String mensagemCacador = cacador.getTipoJogador() + " causou " + dadoJogador + " de dano em "
+                        + zumbiNew.getTipoJogador() + "\n";
+                String mensagemZumbi = zumbiNew.getTipoJogador() + " causou " + dado + " de dano em "
+                        + cacador.getTipoJogador() + "\n";
+                String mensagem = "Vida do Caçador: " + cacador.getVidas() + "\n" + "Vida do zumbi: "
+                        + zumbiNew.getVidas() + "\n";
                 Platform.runLater(() -> {
                     textArea.appendText(mensagemCacador);
                     textArea.appendText(mensagemZumbi);
                     textArea.appendText(mensagem);
                 });
-                pausar(500); // Pausa para visualização
+                pausar(3000); // Pausa para visualização
                 // Verifica se o caçador ou o zumbi foram derrotados
                 if (cacador.getVidas() <= 0) {
                     Platform.runLater(() -> textArea.appendText("O Caçador foi derrotado!\n"));

@@ -28,14 +28,14 @@ public class Tabuleiro {
       return null;
    }
 
-   public boolean contains(Jogador jogador){
+   public boolean contains(Jogador jogador) {
       if (inimigos.contains(jogador)) {
          return true;
       }
       return false;
    }
 
-   public boolean isEmpty(){
+   public boolean isEmpty() {
       if (inimigos.isEmpty()) {
          return true;
       }
